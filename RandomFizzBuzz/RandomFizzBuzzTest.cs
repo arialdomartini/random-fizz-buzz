@@ -1,7 +1,9 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using FluentAssertions;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace RandomFizzBuzz
 {
@@ -146,7 +148,9 @@ namespace RandomFizzBuzz
         [Fact]
         public void should_detect_best_seed()
         {
-            var enumerable = Enumerable.Range(322584, 30_000_000);
+            var step = 1_000_000;
+            var k = 60;
+            var enumerable = Enumerable.Range(322584 + k * step, step);
 
             var keyValuePairs =
                 enumerable.Select(i =>
@@ -159,8 +163,38 @@ namespace RandomFizzBuzz
 
             var bestResult = results.OrderByDescending(a => a.Value).Take(1).Single();
 
-            bestResult.Value.Should().Be(11);
-            bestResult.Key.Should().Be(322584);
+            bestResult.Value.Should().Be(12);
+            bestResult.Key.Should().Be(60502432);
+        }
+
+        [Fact]
+        public void should_work_up_to_11_values()
+        {
+            var result = SequencesExtensions.MyFizzBuzz();
+
+            result.Should().BeEquivalentTo(new List<string>
+            {
+                "1", "2", "fizz", "4", "buzz", "fizz", "7", "8", "fizz", "buzz", "11"
+            }, option => option.WithStrictOrdering());
+        }
+
+        [Fact]
+        public void should_iteratively_detect_best_seed()
+        {
+            var record = 0;
+            for (var i = 0; i < int.MaxValue; i++)
+            {
+                var sequence = SequencesExtensions.FizzBuzzWithSeed(i);
+
+                var length = sequence.MatchesUpToWith(SequencesExtensions.FizzBuzz());
+                if (length > record)
+                {
+                    record = length;
+                    var index = i;
+                    var text = $"New record! {index} generated a length of {record}\n";
+                    File.AppendAllText("/tmp/fizz-buzz.log", text);
+                }
+            }
         }
     }
 }

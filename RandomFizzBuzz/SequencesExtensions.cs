@@ -48,5 +48,11 @@ namespace RandomFizzBuzz
                 yield return x[random.Next(4)];
             }
         }
+
+        private static readonly Random Random = new Random(322584);
+        
+        public static IEnumerable<string> MyFizzBuzz() =>
+            Enumerable.Range(1, 10).Select( i => 
+                new[] {"fizz", "buzz", "fizz buzz", i.ToString()}[Random.Next(4)]);
     }
 }
