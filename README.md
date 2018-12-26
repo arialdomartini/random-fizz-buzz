@@ -13,3 +13,7 @@ public static IEnumerable<string> FizzBuzz() =>
 ```
 
 generate the longest, valid sequence for the Fizz Buzz problem.
+
+
+## Result
+So far, the best result is a 14-item sequence, generated with the seed `40043843`.
