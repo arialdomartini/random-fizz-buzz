@@ -1,5 +1,8 @@
+using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using FluentAssertions;
+using Newtonsoft.Json;
 using Xunit;
 
 namespace RandomFizzBuzz
@@ -47,5 +50,41 @@ namespace RandomFizzBuzz
             };
         }
 
+        [Theory]
+        [MemberData(nameof(OtherValues))]
+        public void should_work_with_infinite_sequences(IEnumerable<int> sequence, int matchLength)
+        {
+            var reference = AllNumbers();
+
+            var result = sequence.MatchesUpToWith(reference);
+
+            result.Should().Be(matchLength);
+        }
+
+        public static IEnumerable<object[]> OtherValues()
+        {
+            return new List<object[]>
+            {
+                new object[]
+                {
+                    new List<int>{ 1, 2, 3},
+                    3
+                },
+                new object[]
+                {
+                    new List<int>{ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10},
+                    10
+                }
+            };
+        }
+
+        private IEnumerable<int> AllNumbers()
+        {
+            var i = 1;
+            while (true)
+            {
+                yield return i++;
+            }
+        }
     }
 }
