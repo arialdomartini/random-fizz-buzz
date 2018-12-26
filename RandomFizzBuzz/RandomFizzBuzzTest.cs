@@ -86,5 +86,31 @@ namespace RandomFizzBuzz
                 yield return i++;
             }
         }
+
+        [Fact]
+        public void should_identify_best_results()
+        {
+            var reference = AllNumbers();
+
+            var sequences = new Dictionary<int, List<int>>
+            {
+                [1] = new List<int> { 1, 2, 3, 4, 5, 6},          // 6
+                [2] = new List<int> { 100, 2, 3, 4, 5, 6},        // 0
+                [3] = new List<int> { 1, 2, 300, 4, 5, 6},        // 2
+                [4] = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8},    // 8
+                [5] = new List<int> { 1, 2, 3, 4, 5}              // 5
+            };
+
+            var result = sequences.Classify(reference);
+
+            result.Should().BeEquivalentTo(new Dictionary<int, int>
+            {
+                [1] = 6,
+                [2] = 0,
+                [3] = 2,
+                [4] = 8,
+                [5] = 5
+            });
+        }
     }
 }
