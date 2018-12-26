@@ -90,7 +90,7 @@ namespace RandomFizzBuzz
         {
             var reference = AllNumbers();
 
-            var sequences = new Dictionary<int, List<int>>
+            var sequences = new Dictionary<int, IEnumerable<int>>
             {
                 [1] = new List<int> { 1, 2, 3, 4, 5, 6},          // 6
                 [2] = new List<int> { 100, 2, 3, 4, 5, 6},        // 0
@@ -120,7 +120,7 @@ namespace RandomFizzBuzz
             {
                 "1", "2", "fizz", "4", "buzz", "fizz", "7", "8", "fizz", "buzz",
                 "11", "fizz", "13", "14", "fizz buzz", "16"
-            });
+            }, option => option.WithStrictOrdering());
         }
 
         [Fact]
@@ -129,6 +129,38 @@ namespace RandomFizzBuzz
             var result = SequencesExtensions.FizzBuzz().Take(1000);
 
             result.Count().Should().Be(1000);
+        }
+
+        [Fact]
+        public void should_generate_random_fizz_buzz_sequence()
+        {
+            var result = SequencesExtensions.FizzBuzzWithSeed(1).Take(16).ToList();
+
+            result.Should().BeEquivalentTo(new List<string>
+            {
+                "fizz", "fizz", "buzz", "4", "fizz buzz", "buzz", "buzz", "8", "fizz", "fizz buzz",
+                "fizz", "fizz", "buzz", "14", "fizz buzz", "fizz buzz"
+            }, option => option.WithStrictOrdering());
+        }
+
+        [Fact]
+        public void should_detect_best_seed()
+        {
+            var enumerable = Enumerable.Range(322584, 30_000_000);
+
+            var keyValuePairs =
+                enumerable.Select(i =>
+                (i, SequencesExtensions.FizzBuzzWithSeed(i)));
+
+            var dictionary =
+                keyValuePairs.ToDictionary(a => a.Item1, a => a.Item2);
+            var results = dictionary.Classify(SequencesExtensions.FizzBuzz());
+
+
+            var bestResult = results.OrderByDescending(a => a.Value).Take(1).Single();
+
+            bestResult.Value.Should().Be(11);
+            bestResult.Key.Should().Be(322584);
         }
     }
 }

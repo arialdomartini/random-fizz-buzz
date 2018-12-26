@@ -6,11 +6,13 @@ namespace RandomFizzBuzz
 {
     public static class SequencesExtensions
     {
-        public static int MatchesUpToWith<T>(this IEnumerable<T> sequence, IEnumerable<T> reference) 
+        public static int MatchesUpToWith<T>(this IEnumerable<T> sequence, IEnumerable<T> reference)
             where T : IEquatable<T> =>
             sequence.TakeWhile((item, index) => item.Equals(reference.ElementAt(index))).Count();
 
-        public static Dictionary<int, int> Classify(this Dictionary<int, List<int>> collections, IEnumerable<int> reference)
+        public static Dictionary<int, int> Classify<T>(
+            this Dictionary<int, IEnumerable<T>> collections, IEnumerable<T> reference)
+        where T : IEquatable<T>
         {
             return collections.Aggregate(new Dictionary<int, int>(), (acc, pair) =>
             {
@@ -33,6 +35,17 @@ namespace RandomFizzBuzz
                 else if (i % 5 == 0)
                     yield return "buzz";
                 else yield return i.ToString();
+            }
+        }
+
+        public static IEnumerable<string> FizzBuzzWithSeed(int seed)
+        {
+            var random = new Random(seed);
+            int i = 1;
+            while (true)
+            {
+                var x = new[] {"fizz", "buzz", "fizz buzz", i++.ToString()};
+                yield return x[random.Next(4)];
             }
         }
     }
