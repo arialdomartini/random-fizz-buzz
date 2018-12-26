@@ -22,7 +22,7 @@ namespace RandomFizzBuzz
             });
         }
 
-        public static IEnumerable<string> FizzBuzz()
+        public static IEnumerable<string> ReferenceFizzBuzz()
         {
             var i = 0;
             while (true)
@@ -49,10 +49,10 @@ namespace RandomFizzBuzz
             }
         }
 
-        private static readonly Random Random = new Random(322584);
-        
-        public static IEnumerable<string> MyFizzBuzz() =>
-            Enumerable.Range(1, 10).Select( i => 
+        private static readonly Random Random = new Random(40043843);
+
+        public static IEnumerable<string> FizzBuzz() =>
+            Enumerable.Range(1, 14).Select( i =>
                 new[] {"fizz", "buzz", "fizz buzz", i.ToString()}[Random.Next(4)]);
     }
 }

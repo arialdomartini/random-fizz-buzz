@@ -4,6 +4,7 @@ using System.Linq;
 using FluentAssertions;
 using Xunit;
 using Xunit.Abstractions;
+using Xunit.Sdk;
 
 namespace RandomFizzBuzz
 {
@@ -116,7 +117,7 @@ namespace RandomFizzBuzz
         [Fact]
         public void should_generate_fizz_buzz_sequence()
         {
-            var result = SequencesExtensions.FizzBuzz().Take(16);
+            var result = SequencesExtensions.ReferenceFizzBuzz().Take(16);
 
             result.Should().BeEquivalentTo(new List<string>
             {
@@ -128,7 +129,7 @@ namespace RandomFizzBuzz
         [Fact]
         public void should_generate_arbitrary_long_fizz_buzz_sequences()
         {
-            var result = SequencesExtensions.FizzBuzz().Take(1000);
+            var result = SequencesExtensions.ReferenceFizzBuzz().Take(1000);
 
             result.Count().Should().Be(1000);
         }
@@ -145,7 +146,7 @@ namespace RandomFizzBuzz
             }, option => option.WithStrictOrdering());
         }
 
-        [Fact]
+        [Fact(Skip = "This consumes a lot of memory: use should_iteratively_detect_best_seed")]
         public void should_detect_best_seed()
         {
             var step = 1_000_000;
@@ -158,7 +159,7 @@ namespace RandomFizzBuzz
 
             var dictionary =
                 keyValuePairs.ToDictionary(a => a.Item1, a => a.Item2);
-            var results = dictionary.Classify(SequencesExtensions.FizzBuzz());
+            var results = dictionary.Classify(SequencesExtensions.ReferenceFizzBuzz());
 
 
             var bestResult = results.OrderByDescending(a => a.Value).Take(1).Single();
@@ -170,7 +171,7 @@ namespace RandomFizzBuzz
         [Fact]
         public void should_work_up_to_11_values()
         {
-            var result = SequencesExtensions.MyFizzBuzz();
+            var result = SequencesExtensions.FizzBuzz();
 
             result.Should().BeEquivalentTo(new List<string>
             {
@@ -186,7 +187,7 @@ namespace RandomFizzBuzz
             {
                 var sequence = SequencesExtensions.FizzBuzzWithSeed(i);
 
-                var length = sequence.MatchesUpToWith(SequencesExtensions.FizzBuzz());
+                var length = sequence.MatchesUpToWith(SequencesExtensions.ReferenceFizzBuzz());
                 if (length > record)
                 {
                     record = length;
