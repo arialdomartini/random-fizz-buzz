@@ -17,5 +17,21 @@ namespace RandomFizzBuzz
                 return acc;
             });
         }
+
+        public static IEnumerable<string> FizzBuzz()
+        {
+            var i = 0;
+            while (true)
+            {
+                i++;
+                if (i % 15 == 0)
+                    yield return "fizz buzz";
+                else if (i % 3 == 0)
+                    yield return "fizz";
+                else if (i % 5 == 0)
+                    yield return "buzz";
+                else yield return i.ToString();
+            }
+        }
     }
 }

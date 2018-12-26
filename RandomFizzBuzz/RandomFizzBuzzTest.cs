@@ -1,8 +1,6 @@
-using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
+using System.Linq;
 using FluentAssertions;
-using Newtonsoft.Json;
 using Xunit;
 
 namespace RandomFizzBuzz
@@ -111,6 +109,26 @@ namespace RandomFizzBuzz
                 [4] = 8,
                 [5] = 5
             });
+        }
+        
+        [Fact]
+        public void should_generate_fizz_buzz_sequence()
+        {
+            var result = SequencesExtensions.FizzBuzz().Take(16);
+
+            result.Should().BeEquivalentTo(new List<string>
+            {
+                "1", "2", "fizz", "4", "buzz", "fizz", "7", "8", "fizz", "buzz",
+                "11", "fizz", "13", "14", "fizz buzz", "16"
+            });
+        }
+
+        [Fact]
+        public void should_generate_arbitrary_long_fizz_buzz_sequences()
+        {
+            var result = SequencesExtensions.FizzBuzz().Take(1000);
+
+            result.Count().Should().Be(1000);
         }
     }
 }
