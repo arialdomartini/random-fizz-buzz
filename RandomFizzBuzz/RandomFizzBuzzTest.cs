@@ -197,5 +197,43 @@ namespace RandomFizzBuzz
                 }
             }
         }
+
+        [Fact]
+        public void should_get_permutations()
+        {
+            var list = new[] {"fizz", "buzz", "fizz buzz", "100"};
+
+            var result = SequencesExtensions.GetPermutations(list);
+
+            result.Count().Should().Be(24);
+        }
+
+        [Fact]
+        public void should_iteratively_detect_best_seed_considering_permutations()
+        {
+            var record = 0;
+            for (var i = 0; i < int.MaxValue; i++)
+            {
+                for (var permutation = 0; permutation < 24; permutation++)
+                {
+                    var sequence = SequencesExtensions.FizzBuzzWithSeed(i, permutation);
+
+                    var length = sequence.MatchesUpToWith(SequencesExtensions.ReferenceFizzBuzz());
+                    if (length > record)
+                    {
+                        record = length;
+                        var index = i;
+                        Log($"New record! {index} with permutation {permutation} generated a length of {record}\n");
+                    }
+
+                }
+            }
+        }
+
+        private static void Log(string text)
+        {
+            File.AppendAllText("/tmp/fizz-buzz.log",
+                text);
+        }
     }
 }

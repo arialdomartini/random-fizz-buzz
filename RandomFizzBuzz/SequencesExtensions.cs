@@ -49,6 +49,30 @@ namespace RandomFizzBuzz
             }
         }
 
+        public static IEnumerable<string> FizzBuzzWithSeed(int seed, int permutation)
+        {
+            var random = new Random(seed);
+            int i = 1;
+            while (true)
+            {
+                var x = new[] {"fizz", "buzz", "fizz buzz", i++.ToString()};
+                var y = GetPermutations(x).ToList()[permutation].ToList();
+                yield return y[random.Next(4)];
+            }
+        }
+
+        public static IEnumerable<IEnumerable<T>> GetPermutations<T>(IList<T> list) =>
+            GetPermutations(list, list.Count);
+
+        public static IEnumerable<IEnumerable<T>> GetPermutations<T>(IList<T> list, int length)
+        {
+            if (length == 1) return list.Select(t => new[] { t });
+
+            return GetPermutations(list, length - 1)
+                .SelectMany(t => list.Where(e => !t.Contains(e)),
+                    (t1, t2) => t1.Concat(new[] { t2 }));
+        }
+
         private static readonly Random Random = new Random(40043843);
 
         public static IEnumerable<string> FizzBuzz() =>
